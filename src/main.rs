@@ -2,7 +2,7 @@
 use std::fs;
 
 fn main() {
-    let result = day1_part2();
+    let result = day2();
     println!("result: {}", result);
 }
 
@@ -50,4 +50,55 @@ fn day1_part2() -> u32 {
 
     buckets.sort();
     buckets.iter().rev().take(3).sum()
+}
+
+#[derive(Debug)]
+enum Move {
+    Rock,
+    Paper,
+    Scissors,
+}
+
+impl Move {
+    fn compare(&self, other: &Move) -> u32 {
+        match &self {
+            Move::Rock => match other {
+                Move::Rock => 1 + 3,
+                Move::Paper => 1 + 0,
+                Move::Scissors => 1 + 6,
+            },
+            Move::Paper => match other {
+                Move::Rock => 2 + 6,
+                Move::Paper => 2 + 3,
+                Move::Scissors => 2 + 0,
+            },
+            Move::Scissors => match other {
+                Move::Rock => 3 + 0,
+                Move::Paper => 3 + 6,
+                Move::Scissors => 3 + 3,
+            },
+        }
+    }
+}
+
+fn day2() -> u32 {
+    let contents = fs::read_to_string("assets/real/day2").expect("Missing file");
+    let mut sum = 0;
+    for line in contents.lines() {
+        let parts: Vec<&str> = line.split(' ').collect();
+        let theirs = match parts[0] {
+            "A" => Move::Rock,
+            "B" => Move::Paper,
+            "C" => Move::Scissors,
+            _ => panic!("unknown option"),
+        };
+        let ours = match parts[1] {
+            "X" => Move::Rock,
+            "Y" => Move::Paper,
+            "Z" => Move::Scissors,
+            _ => panic!("unknown option"),
+        };
+        sum += ours.compare(&theirs);
+    }
+    sum
 }
