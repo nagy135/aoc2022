@@ -1,8 +1,10 @@
-#[allow(dead_code)]
+#![allow(dead_code, unused_variables)]
+
+use std::collections::HashSet;
 use std::fs;
 
 fn main() {
-    let result = day2_part2();
+    let result = day3();
     println!("result: {}", result);
 }
 
@@ -149,4 +151,34 @@ fn day2_part2() -> u32 {
         sum += ours.compare(&theirs);
     }
     sum
+}
+
+fn day3() -> u32 {
+    let contents = fs::read_to_string("assets/real/day3").expect("Missing file");
+    let mut global_matching: Vec<char> = vec![];
+    for line in contents.lines() {
+        let half_len = line.len() / 2;
+        let first = &line[0..half_len];
+        let second = &line[half_len..];
+
+        let mut matching: HashSet<char> = HashSet::new();
+        for letter in first.chars() {
+            for letter2 in second.chars() {
+                if letter == letter2 {
+                    matching.insert(letter);
+                }
+            }
+        }
+        let extension: Vec<&char> = matching.iter().collect();
+        global_matching.extend(extension);
+    }
+    let mut res = 0;
+    for x in global_matching {
+        let new = match x.is_uppercase() {
+            true => x as u32 - 38,
+            false => x as u32 - 96,
+        };
+        res += new;
+    }
+    res
 }
