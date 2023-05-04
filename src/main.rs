@@ -4,7 +4,7 @@ use std::collections::HashSet;
 use std::fs;
 
 fn main() {
-    let result = day3();
+    let result = day3_part2();
     println!("result: {}", result);
 }
 
@@ -179,6 +179,41 @@ fn day3() -> u32 {
             false => x as u32 - 96,
         };
         res += new;
+    }
+    res
+}
+
+fn day3_part2() -> u32 {
+    let contents = fs::read_to_string("assets/real/day3").expect("Missing file");
+    let lines = || contents.lines();
+    let mut iterator = lines();
+    let len = lines().count();
+    let mut res = 0;
+    for i in (0..len).step_by(3) {
+        let hs1: HashSet<char> = iterator
+            .next()
+            .expect("broken iterator by 3")
+            .chars()
+            .collect();
+        println!("hs1 {:?}", hs1);
+        let hs2: HashSet<char> = iterator
+            .next()
+            .expect("broken iterator by 3")
+            .chars()
+            .collect();
+        let hs3: HashSet<char> = iterator
+            .next()
+            .expect("broken iterator by 3")
+            .chars()
+            .collect();
+        let intersection1: HashSet<char> = hs1.clone().intersection(&hs2).cloned().collect();
+        let intersection2: Vec<char> = intersection1.intersection(&hs3).cloned().collect();
+        for x in intersection2 {
+            res += match x.is_uppercase() {
+                true => x as u32 - 38,
+                false => x as u32 - 96,
+            };
+        }
     }
     res
 }
